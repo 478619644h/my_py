@@ -1,0 +1,105 @@
+import xlrd
+
+
+def readExcel(filePath,sheetName):
+    data = xlrd.open_workbook(filePath)
+    table = data.sheet_by_name(sheetName)
+    rowNum = table.nrows
+    startRow = 6
+
+    sysHead = ''
+    localhead = ''
+
+    zhushi = '''
+        /**
+        * @description %s
+        * @requird %s
+        */
+    '''
+
+    field = '''private %s %s;'''
+
+    for i in range(rowNum - startRow):
+       row = i + startRow
+
+       name = table.cell(row, 7).value
+       cName = table.cell(row, 8).value
+       if name == "输出":
+           break
+
+       require = table.cell(row, 11).value
+
+       head = table.cell(row, 10).value
+       # 类型长度
+       val = table.cell(row, 9).value
+       type = val.split("(")[0]
+       if head == "sysHead":
+           sysHead += zhushi%(cName,require)
+           sysHead += field % (type,name)
+       if head == "localHead":
+           localhead += zhushi%(cName,require)
+           localhead += field%(type,name)
+
+    print("=======sysHead=================")
+    print(sysHead)
+
+    print("=======localHead=================")
+    print(localhead)
+
+
+def readExcelTOPojo(filePath,sheetName):
+    data = xlrd.open_workbook(filePath)
+    table = data.sheet_by_name(sheetName)
+    rowNum = table.nrows
+    startRow = 7
+
+    sysHead = ''
+    localhead = ''
+
+    zhushi = '''
+        /**
+        * @description %s
+        * @requird %s
+        */
+    '''
+
+    field = '''private %s %s;'''
+
+    for i in range(rowNum - startRow):
+       row = i + startRow
+
+       name = table.cell(row, 0).value
+       cName = table.cell(row, 1).value
+       if name == "输出":
+           break
+
+       require = table.cell(row, 4).value
+
+
+       val = table.cell(row, 2).value
+       type = val.split("(")[0]
+
+       flag = table.cell(row, 5).value
+       if "Array" == type and "Start" == flag:
+           print("=============================%s %s  start ==========="%(name,type))
+           continue
+
+       if "Array" == type and "End" == flag:
+           print("=============================%s %s end =============="%(name,type))
+           continue
+
+       if "Struct" == type and "Start" == flag:
+           print("=============================%s %s  start ===========" % (name,type))
+           continue
+
+       if "Struct" == type and "End" == flag:
+           print("=============================%s %s end ==============" % (name,type))
+           continue
+
+
+       print(zhushi % (cName, require))
+       print(field % (type, name))
+
+
+if __name__ == "__main__":
+    readExcelTOPojo("./BOQHD_TS_P_22_IT优化项目群_ESB_财富E站通调用适配_字段映射文档_V2.4.7.xls","UWP_DRS0002")
