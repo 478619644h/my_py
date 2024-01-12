@@ -9,7 +9,7 @@ from PyPDF2 import PdfReader, PdfWriter
 def read_config():
     config_path = './config.ini'
     config = configparser.ConfigParser()
-    config.read(config_path)
+    config.read(config_path,encoding='utf-8')
     return config
 config = read_config()
 def text(path):
