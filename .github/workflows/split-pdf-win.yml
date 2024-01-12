@@ -18,5 +18,6 @@ jobs:
         with:
           python_ver: '3.12'
           spec: 'pdf/split-pdf.py'
+          requirements: 'pdf/requirements.txt'
           upload_exe_with_name: 'split-pdf'
           options: --onefile, --name "split-pdf", --windowed, 
