@@ -36,10 +36,10 @@ def split_pdf(input_path, page_no,name):
     
 
 
-def remove_files_by_folder(folder_path):
+def remove_files_by_folder(folder_path,rm_paths):
     folder_list = list()
     for folder in os.listdir(folder_path):
-        if os.path.isdir(folder):
+        if os.path.isdir(folder) and folder in rm_paths:
             folder_list.append(folder)
     for file in folder_list:
         rm_path = os.path.join(folder_path, file)
@@ -52,7 +52,7 @@ def remove_files_by_folder(folder_path):
 folder_path = "./"
 split_file_path = './splitpdf'
 if __name__ == '__main__':
-    remove_files_by_folder(folder_path)
+    remove_files_by_folder(folder_path,['splitpdf'])
     if not os.path.exists(split_file_path):
        os.mkdir(split_file_path)
     for filename in os.listdir(folder_path):
