@@ -1,10 +1,17 @@
 
+import configparser
 import os
 import struct
 import shutil
 import pdfplumber
 from PyPDF2 import PdfReader, PdfWriter
 
+def read_config():
+    config_path = './config.ini'
+    config = configparser.ConfigParser()
+    config.read(config_path)
+    return config
+config = read_config()
 def text(path):
    with pdfplumber.open(path) as pdf:
        for i,page in enumerate(pdf.pages):
@@ -19,7 +26,7 @@ def text(path):
                     name = line.split('： ')[1]
                 if  '公司工号' in line:
                     work_no = line.split('：')[1]
-           file_name = '%s_%s_%s' % (name,work_no,book_no)
+           file_name = config.get('config','file_name_format').format(name=name, work_no=work_no, book_no=book_no)
            split_pdf(path,i,file_name)
 
 
@@ -33,6 +40,7 @@ def split_pdf(input_path, page_no,name):
     output_filename = f"./splitpdf/{name}.pdf"
     with open(output_filename, "wb") as output_file:
         output.write(output_file)
+    print(f'生成:[{output_filename}]')
     
 
 
@@ -57,8 +65,10 @@ if __name__ == '__main__':
        os.mkdir(split_file_path)
     for filename in os.listdir(folder_path):
         if filename.endswith(".pdf"):
+            print(f"开始按页切分文件:[{filename}]")
             pdf_path = os.path.join(folder_path, filename)
-            text(pdf_path)  
+            text(pdf_path)
+            print(f"完成按页切分文件:[{filename}]")
 
 
 
